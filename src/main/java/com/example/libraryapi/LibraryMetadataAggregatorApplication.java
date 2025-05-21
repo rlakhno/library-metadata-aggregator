@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LibraryMetadataAggregatorApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(LibraryMetadataAggregatorApplication.class, args);
 	}
 
