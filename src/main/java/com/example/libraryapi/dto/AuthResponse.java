@@ -3,9 +3,9 @@ package com.example.libraryapi.dto;
 public class AuthResponse {
     private String token;
 
-    private AuthResponse() {}
+    public AuthResponse() {}
 
-    private AuthResponse(String token) {
+    public AuthResponse(String token) {
         this.token = token;
     }
 
