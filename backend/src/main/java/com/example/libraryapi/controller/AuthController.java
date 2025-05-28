@@ -50,7 +50,7 @@ public class AuthController {
         }
 
         // Default role is USER and creates an immutable Set with just one item ("ROLE_USER")
-        user.setRoles(Collections.singleton("ROLE_USER"));
+        user.setRole("ROLE_USER");
 
         // Register user (password in hashed in UserService)
         userService.registerUser(user);
@@ -70,7 +70,7 @@ public class AuthController {
                             .getUsername(), loginRequest.getPassword())
             );
 
-            // Load user credentials and roles for authentication
+            // Load user credentials and role for authentication
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequest.getUsername());
 
             // Generate token
