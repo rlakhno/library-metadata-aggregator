@@ -41,10 +41,7 @@ public class AuthController {
     // POST - Register
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // Check if username already exists
-        if(userRepository.existsByUsername(user.getUsername())) {
-            return ResponseEntity.badRequest().body("Username already taken");
-        }
+        // Check if email already exists
         if(userRepository.existsByEmail(user.getEmail())) {
             return ResponseEntity.badRequest().body("Email already in use");
         }
@@ -67,7 +64,7 @@ public class AuthController {
             // Authenticate user credentials
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest
-                            .getUsername(), loginRequest.getPassword())
+                            .getEmail(), loginRequest.getPassword())
             );
 
             // Load user credentials and role for authentication
