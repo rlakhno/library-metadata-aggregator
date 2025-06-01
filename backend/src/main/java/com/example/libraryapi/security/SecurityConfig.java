@@ -58,7 +58,7 @@ public class SecurityConfig {
                         SessionCreationPolicy.STATELESS)) // No sessions
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/", "/api/auth/register", "/api/auth/login").permitAll()
                         // Everything else needs authentication
                         .anyRequest().authenticated()
                 )
