@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers("/", "/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/books/**").authenticated()
                         // Everything else needs authentication
                         .anyRequest().authenticated()
                 )
