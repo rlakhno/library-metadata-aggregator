@@ -27,6 +27,12 @@ public class BookController {
         return bookService.findAll();
     }
 
+    @GetMapping("/search")
+    public List<Book> searchBooks(@RequestParam String keyword) {
+        return bookService.searchByKeyword(keyword);
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookService.findById(id)
