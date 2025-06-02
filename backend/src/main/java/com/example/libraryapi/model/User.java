@@ -6,7 +6,11 @@ import lombok.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_email", columnList = "email")
+        })
 @Getter
 @Setter
 @NoArgsConstructor

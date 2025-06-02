@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "books")
+@Table(
+        name = "books",
+        indexes = {
+                @Index(name = "idx_fetched_by", columnList = "fetched_by")
+        }
+        )
 @Getter
 @Setter
 @NoArgsConstructor
