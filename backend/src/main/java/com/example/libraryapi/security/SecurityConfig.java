@@ -66,10 +66,12 @@ public class SecurityConfig {
                         // Secure /api/books/fetch and other book management endpoints - only authenticated users
                         .requestMatchers("/api/books/fetch").authenticated()
 
-                        // For demo, you can allow read-only GET on /api/books to all, but protect write endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                        // Allow both USER and ADMIN to access /api/books
+                        .requestMatchers(HttpMethod.POST, "/api/books/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyRole("ADMIN", "USER")
 
-                        // Example of role-based access: only admins can delete books
+
+                        // Example of role-based access: only ADMIN can delete books
                         .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
                         // Everything else needs authentication
                         .anyRequest().authenticated()
