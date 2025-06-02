@@ -1,5 +1,6 @@
 package com.example.libraryapi.service;
 
+import com.example.libraryapi.dto.UserActivityDTO;
 import com.example.libraryapi.model.User;
 import com.example.libraryapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,16 +24,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /*
-       private final UserRepository userRepository;
-       private final BCryptPasswordEncoder passwordEncoder;
 
-       @Autowired
-       public UserService(UserRepository userRepository){
-           this.userRepository = userRepository;
-           this.passwordEncoder = new BCryptPasswordEncoder();
-       }
-   */
     public User registerUser(User user) {
         // Check if username already exists
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -47,10 +41,33 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    // Optional password check helper
+    // Password check helper
     public boolean checkPassword(User user, String rawPassword) {
         return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 
+    // Convert dto in Service
+    public List<UserActivityDTO> getUserRoleAndBookCount(){
+
+        // Get the raw result from the native query: [email, role, bookCount])
+        List<Object[]> result = userRepository.findUserRoleAndBookCount();
+
+        // Create an empty list to hold the final DTOs
+        List<UserActivityDTO> userActivities = new ArrayList<>();
+
+        // Loop through each row of the result and extract values with type safety
+        for(Object[] row : result) {
+            String email = (String) row[0];
+            String role = (String) row[1];
+            // handles both Integer and Long
+            Long bookCount = ((Number) row[2]).longValue();
+
+            // Create a new DTO and add it to the list
+            userActivities.add(new UserActivityDTO(email, role, bookCount));
+        }
+
+        return userActivities;
+
+    }
 
 }

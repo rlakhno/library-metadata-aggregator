@@ -71,8 +71,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyRole("ADMIN", "USER")
 
 
-                        // Example of role-based access: only ADMIN can delete books
+                        // Only ADMIN can delete books
                         .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+
+                        // Only authenticated users
+                        .requestMatchers("/api/users/**").authenticated()
+
                         // Everything else needs authentication
                         .anyRequest().authenticated()
                 )
