@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -58,9 +59,11 @@ public class BookController {
     }
 
     @PostMapping("/fetch")
-    public ResponseEntity<String> fetchAndSaveBook(@RequestParam String isbn) {
+    public ResponseEntity<String> fetchAndSaveBook(@RequestParam String isbn, Principal principal) {
         try {
             Book book = externalBookService.fetchFromGoogleBooks(isbn);
+            // Set the fetchedBy email from the authenticated user
+            book.setFetchedBy(principal.getName());
             Book saved = bookService.save(book);
             return ResponseEntity.ok("Book fetched and saved with ID: " + saved.getId());
         } catch (Exception e) {

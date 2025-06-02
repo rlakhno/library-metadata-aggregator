@@ -29,4 +29,8 @@ public class Book {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "fetched_by")
+    private String fetchedBy;
+
 }
