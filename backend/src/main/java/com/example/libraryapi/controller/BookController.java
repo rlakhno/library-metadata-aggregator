@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/books")
@@ -70,5 +71,10 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to fetch book with ISBN: " + isbn);
         }
+    }
+
+    @GetMapping("/top-users")
+    public ResponseEntity<List<Map<String, Object>>> getTopActiveUsers() {
+        return ResponseEntity.ok(bookService.getTopActiveUsers());
     }
 }

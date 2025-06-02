@@ -4,8 +4,11 @@ import com.example.libraryapi.model.Book;
 import com.example.libraryapi.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -38,6 +41,19 @@ public class BookService {
 
     public List<Book> searchByKeyword(String keyword) {
         return bookRepository.searchByKeyword(keyword.toLowerCase());
+    }
+
+    public List<Map<String, Object>> getTopActiveUsers() {
+        List<Object[]> results = bookRepository.findTopActiveUsers();
+
+        return results.stream()
+                .map(row -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("userEmail", row[0]);
+                    map.put("booksFetched", row[1]);
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 
 }
