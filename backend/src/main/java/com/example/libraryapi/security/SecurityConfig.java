@@ -3,10 +3,12 @@ package com.example.libraryapi.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -57,9 +60,17 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS)) // No sessions
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/", "/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers("/api/books/**").authenticated()
+                        // Allow unauthenticated access to auth endpoints and home
+                        .requestMatchers("/", "/api/auth/**").permitAll()
+
+                        // Secure /api/books/fetch and other book management endpoints - only authenticated users
+                        .requestMatchers("/api/books/fetch").authenticated()
+
+                        // For demo, you can allow read-only GET on /api/books to all, but protect write endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+
+                        // Example of role-based access: only admins can delete books
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
                         // Everything else needs authentication
                         .anyRequest().authenticated()
                 )

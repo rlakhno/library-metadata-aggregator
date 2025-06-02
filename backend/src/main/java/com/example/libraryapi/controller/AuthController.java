@@ -56,7 +56,7 @@ public class AuthController {
     // POST - Login
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody AuthRequest loginRequest) {
-        System.out.println("🔑 Login attempt for email: " + loginRequest.getEmail());
+        System.out.println("Login attempt for email: " + loginRequest.getEmail());
 
         try{
             // Authenticate user credentials
@@ -64,19 +64,19 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest
                             .getEmail(), loginRequest.getPassword())
             );
-            System.out.println("✔ AuthenticationManager authenticate() succeeded");
+            System.out.println("AuthenticationManager authenticate() succeeded");
 
             // Load user credentials and role for authentication
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
-            System.out.println("✔ Loaded user details for JWT generation");
+            System.out.println("Loaded user details for JWT generation");
 
             // Generate token
             String token = jwtUtil.generateToken(userDetails);
-            System.out.println("✔ JWT generated: " + token);
+            System.out.println("JWT generated: " + token);
 
             return ResponseEntity.ok(new AuthResponse(token));
         } catch (Exception e) {
-            System.out.println("❌ Authentication failed: " + e.getMessage());
+            System.out.println("Authentication failed: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(401).body("Invalid username or password");
         }

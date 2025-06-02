@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -26,9 +28,15 @@ public class JwtUtil {
 
     // Generate token
     public String generateToken(UserDetails userDetails) {
+        List<String> roles = userDetails.getAuthorities().stream()
+                // Strip "ROLE_"
+                .map(auth -> auth.getAuthority()
+                        .replace("ROLE_", "")).toList();
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities())
+                // store List<String>, e.g. ["ADMIN"]
+                .claim("roles", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -57,6 +65,12 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    // Extracting Roles from Token
+    @SuppressWarnings("unchecked")
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return (List<String>) claims.get("roles");
+    }
 
     // Extract claim using a generic claim extractor
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
