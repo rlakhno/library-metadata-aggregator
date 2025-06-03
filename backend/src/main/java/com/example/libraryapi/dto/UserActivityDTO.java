@@ -1,9 +1,17 @@
 package com.example.libraryapi.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "User activity data with role and book count")
 public class UserActivityDTO {
 
+    @Schema(description = "User's email", example = "user@example.com")
     private String email;
+
+    @Schema(description = "User's role", example = "ROLE_USER")
     private String role;
+
+    @Schema(description = "Number of books fetched by the user", example = "5")
     private Long bookCount;
 
     public UserActivityDTO(){

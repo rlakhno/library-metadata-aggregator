@@ -77,6 +77,15 @@ public class SecurityConfig {
                         // Only authenticated users
                         .requestMatchers("/api/users/**").authenticated()
 
+                        // Add the swagger patterns
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+
                         // Everything else needs authentication
                         .anyRequest().authenticated()
                 )

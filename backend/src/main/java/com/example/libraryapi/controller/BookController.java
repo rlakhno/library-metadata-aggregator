@@ -3,6 +3,11 @@ package com.example.libraryapi.controller;
 import com.example.libraryapi.model.Book;
 import com.example.libraryapi.service.BookService;
 import com.example.libraryapi.service.ExternalBookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +17,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Books", description = "Operations related to books")
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -24,6 +30,11 @@ public class BookController {
         this.externalBookService = externalBookService;
     }
 
+    @Operation(summary = "Get all books",
+            description = "Returns a list of books stored in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of books retrieved successfully")
+    })
     @GetMapping
     public List<Book> getAllBooks() {
         return bookService.findAll();
@@ -34,7 +45,12 @@ public class BookController {
         return bookService.searchByKeyword(keyword);
     }
 
-
+    @Operation(summary = "Get book by ID",
+            description = "Retrieve detailed information of a book by its unique ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Book found"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookService.findById(id)
@@ -59,8 +75,15 @@ public class BookController {
         }
     }
 
+    @Operation(summary = "Fetch a book by ISBN", description = "Fetches book data from external API and saves it.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Book fetched and saved successfully"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/fetch")
-    public ResponseEntity<String> fetchAndSaveBook(@RequestParam String isbn, Principal principal) {
+    public ResponseEntity<String> fetchAndSaveBook(@Parameter(description =
+            "ISBN number of the book to fetch and principal representing the authenticated user")
+                                                       @RequestParam String isbn, Principal principal) {
         try {
             Book book = externalBookService.fetchFromGoogleBooks(isbn);
             // Set the fetchedBy email from the authenticated user
@@ -73,6 +96,14 @@ public class BookController {
         }
     }
 
+    @Operation(
+            summary = "Get top active users",
+            description = "Returns a list of users sorted by the number of books they fetched, DESC."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Top active users retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Failed to retrieve user activity")
+    })
     @GetMapping("/top-users")
     public ResponseEntity<List<Map<String, Object>>> getTopActiveUsers() {
         return ResponseEntity.ok(bookService.getTopActiveUsers());
