@@ -8,6 +8,9 @@ import com.example.libraryapi.repository.UserRepository;
 import com.example.libraryapi.security.CustomUserDetailsService;
 import com.example.libraryapi.security.JwtUtil;
 import com.example.libraryapi.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +56,21 @@ public class AuthController {
     }
 
 
+    @Operation(
+            summary = "Login user",
+            description = "Authenticate a user and return a JWT token",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Login Example",
+                                    summary = "Login using email and password",
+                                    value = "{ \"email\": \"newuser112@example.com\", \"password\": \"StrongPass123\" }"
+                            )
+                    )
+            )
+    )
     // POST - Login
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody AuthRequest loginRequest) {

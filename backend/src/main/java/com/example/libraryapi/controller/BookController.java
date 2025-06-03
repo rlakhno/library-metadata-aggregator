@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,9 @@ import java.util.Map;
 
 @Tag(name = "Books", description = "Operations related to books")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/books")
+
 public class BookController {
 
     private final BookService bookService;

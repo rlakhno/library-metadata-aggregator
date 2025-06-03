@@ -66,6 +66,8 @@ public class SecurityConfig {
                         // Secure /api/books/fetch and other book management endpoints - only authenticated users
                         .requestMatchers("/api/books/fetch").authenticated()
 
+                        .requestMatchers("/api/lendings/**").authenticated()
+
                         // Allow both USER and ADMIN to access /api/books
                         .requestMatchers(HttpMethod.POST, "/api/books/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyRole("ADMIN", "USER")
