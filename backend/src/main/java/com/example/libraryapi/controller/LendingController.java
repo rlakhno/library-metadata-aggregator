@@ -3,6 +3,7 @@ package com.example.libraryapi.controller;
 import com.example.libraryapi.model.Lending;
 import com.example.libraryapi.service.LendingService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class LendingController {
     private LendingService lendingService;
 
     @Operation(summary = "Create a new lending record")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<Lending> saveLending(@RequestBody Lending lending) {
         Lending saved = lendingService.saveLending(lending);
@@ -24,12 +26,14 @@ public class LendingController {
     }
 
     @Operation(summary = "Get all the lending records")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ResponseEntity<List<Lending>> getAllLendings() {
         return ResponseEntity.ok(lendingService.getAllLendings());
     }
 
     @Operation(summary = "Get lending records by user email")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/user-email")
     public ResponseEntity<List<Lending>> getLendingsByUserEmail(@RequestParam String email) {
         return ResponseEntity.ok(lendingService.getLendingsByUserEmail(email));
